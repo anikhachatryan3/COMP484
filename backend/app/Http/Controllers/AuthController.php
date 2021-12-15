@@ -12,7 +12,7 @@ class AuthController extends Controller
 {
 
     // For registering
-    public function register(Request $request) {
+    public function register2(Request $request) {
         $request->validate([
             'email' => 'required|email|unique:users',
             'username' => 'required|unique:users',
@@ -35,7 +35,7 @@ class AuthController extends Controller
     }
 
     // For logging in
-    public function login(Request $request) {
+    public function login2(Request $request) {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',

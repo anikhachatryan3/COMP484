@@ -18,8 +18,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/register', 'App\Http\Controllers\AuthController@register');
-Route::post('/login', 'App\Http\Controllers\AuthController@login');
+Route::post('/register2', 'App\Http\Controllers\AuthController@register2');
+Route::post('/login2', 'App\Http\Controllers\AuthController@login2');
 Route::get('/posts', 'App\Http\Controllers\PostController@getAllPosts');
 Route::get('/{user}/posts', 'App\Http\Controllers\PostController@getMyPosts');
 Route::post('/create-post', 'App\Http\Controllers\PostController@createPost');

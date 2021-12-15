@@ -1,18 +1,35 @@
 <template>
   <div>
-    <h1>All Posts</h1>
+    <h1 class="mt-3">Hello, {{user.username}}!</h1>
     <div v-for="post in posts" :key="post.id">
-      <div>{{post.title}}</div>
-      <div>{{post.body}}</div>
+      <div>{{error}}</div>
+      <h4>{{post.title}}</h4>
+      <div><p>{{post.body}}</p></div>
       <div>{{post.user.username}}</div>
-      <div>{{post.created_at}}</div>
-      <hr>
-      <div>
+      <div>{{dateTime(post.created_at)}}</div>
+      <div v-if="post.user.id == user.id || user.role.id == 1"><button @click="deletePost(post)" type="button" class="btn btn-danger mt-2">Delete Post</button></div>
+      <div class="mt-3">
+        <h3>Comment(s):</h3>
         <div v-for="comment in post.comments" :key="comment.id">
           <div>{{comment.body}}</div>
           <div>{{comment.user.username}}</div>
-          <div>{{comment.created_at}}</div>
+          <div>{{dateTime(comment.created_at)}}</div>
+          <div v-if="comment.user.id == user.id || user.role.id == 1"><button @click="deleteComment(comment, post)" type="button" class="btn btn-danger mt-2">Delete Comment</button></div>
+          <br>
         </div>
+        <br>
+      </div>
+      <div>
+        <form>
+          <div>
+            <div>Create a Comment:</div>
+            <textarea v-model="comment.body" rows="5" cols="40" placeholder="Your comment here..."></textarea>
+            <!-- <br> -->
+            <div><button @click="createComment(post)" type="button" class="btn btn-success">Publish Comment</button></div>
+            <br>
+            <hr>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -20,12 +37,21 @@
 
 <script>
 import axios from 'axios';
+import moment from 'moment';
 
 export default {
   name: 'Home',
   data() {
     return {
-      posts: []
+      posts: [],
+      comment: {
+        body: '',
+        user_id: '',
+      },
+      error: '',
+      title: '',
+      body: '',
+      user_id: ''
     }
   },
   created() {
@@ -40,6 +66,56 @@ export default {
   computed: {
     user() {
       return this.$session.get('user');
+    }
+  },
+  methods: {
+    dateTime(value) {
+      return moment(String(value)).format('MM/DD/YYYY hh:mm a');
+    },
+    deletePost(post) {
+      let self = this;
+      // axios.delete('http://localhost:8000/api/' + self.$session.user.id + '/posts/' + post.id)
+      axios.delete('http://localhost:8000/api/' + self.$session.get('user').id + '/posts/' + post.id)
+      .then(function(response) {
+        self.response = response.data.message;
+        for (let i = 0; i < self.posts.length; i++) {
+          if (self.posts[i].id === post.id) {
+            self.posts.splice(i, 1)
+            break
+          }
+        }
+      })
+      .catch(function(error) {
+        self.error = error.response.data.errors.other;
+      })
+    },
+    deleteComment(comment, post) {
+      // console.log('deleting comment');
+      axios.delete('http://localhost:8000/api/' + this.$session.get('user').id + '/comments/' + comment.id)
+      .then(function () {
+        for(let i = 0; i < post.comments.length; i++) {
+          if(post.comments[i].id === comment.id) {
+            post.comments.splice(i, 1);
+            break;
+          }
+        }
+      })
+      .catch(function(error) {
+        self.error = error.response.data.errors.other;
+      })
+    },
+    createComment(post) {
+      let self = this;
+      axios.post('http://localhost:8000/api/create-comment', {
+        body: this.comment.body,
+        post_id: post.id,
+        user_id: self.$session.get('user').id,
+      }).then(function (response) {
+        post.comments.push(response.data.comment);
+        self.comment.body = '';
+      }).catch(function (error) {
+        self.error = error.response.data.errors.other;
+      })
     }
   }
 }

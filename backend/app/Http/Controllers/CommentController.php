@@ -21,6 +21,7 @@ class CommentController extends Controller
         $comment->post_id = $request->post_id;
         $comment->user_id = $request->user_id;
         if($comment->save()) {
+            $comment->user;
             return response()->json([
                 'comment' => $comment
             ], 201);
@@ -35,7 +36,7 @@ class CommentController extends Controller
     }
 
     // Delete comment
-    public function deleteComment(Comment $comment, User $user) {
+    public function deleteComment(User $user, Comment $comment) {
         if($user->role->name == 'admin' || $comment->user_id == $user->id) {
             if($comment->delete()) {
                 return response()->json([

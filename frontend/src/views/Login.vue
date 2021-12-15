@@ -1,19 +1,20 @@
 <template>
     <div>
-        <h1>Login</h1>
+        <h1 class="mt-3 mb-3">Login</h1>
         <form>
             <div>
                 <input v-model="email" placeholder="Email" type="email" required />
             </div>
-            <div>
+            <div class="mt-2">
                 <input v-model="password" placeholder="Password" type="password" required />
             </div>
-            <div>
-                <button @click="login()">Login</button>
+            <div class="mt-2">
+                <button @click="login()" type="button">Login</button>
             </div>
             <div class="errorMessage">
                 {{ error }}
             </div>
+            <br>
             <div>
                 Don't have an account?
                 <router-link to="/register">Register Here</router-link>
@@ -37,17 +38,17 @@ export default {
   methods: {
     login() {
         let self = this;
-        axios.post('http://localhost:8000/api/login', {
+        axios.post('http://localhost:8000/api/login2', {
             email: this.email,
             password: this.password,
         }).then(function (response) {
             self.$session.start();
             self.$session.set('auth', true);
             self.$session.set('user', response.data.user);
-            self.$store.commit('login', response.data.user);
-            self.$router.push('/home');
+            self.$bus.$emit('login', 'User logged');
+            self.$router.push({ name: 'Home' });
         }).catch(function (error) {
-            console.log(error.responde.data)
+            // console.log(error.responde.data)
             if(error.response.data.errors.email != null) {
                 self.error = error.response.data.errors.email[0]
             }

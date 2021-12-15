@@ -54,6 +54,8 @@ class PostController extends Controller
         $post->body = $request->body;
         $post->user_id = $request->user_id;
         if($post->save()) {
+            $post->user;
+            $post->comments;
             return response()->json([
                 'post' => $post
             ], 201);
@@ -68,8 +70,11 @@ class PostController extends Controller
     }
 
     // Delete post
-    public function deletePost(Post $post, User $user) {
+    public function deletePost(User $user, Post $post) {
         if($user->role->name == 'admin' || $post->user_id == $user->id) {
+            foreach($post->comments as $comment) {
+                $comment->delete();
+            }
             if($post->delete()) {
                 return response()->json([
                     'message' => 'Successfully deleted post!',
