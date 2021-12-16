@@ -48,39 +48,39 @@ export default {
   },
   methods: {
     register() {
-      if(this.role == '') {
-        this.error = 'Please select a role';
+      let self = this;
+      if(self.role == '') {
+        self.error = 'Please select a role';
       }
       else {
-        let self = this;
         axios.post('https://comp-484.herokuapp.com/api/register2', {
-          email: this.email,
-          username: this.username,
-          role: this.role,
-          password: this.password,
+          email: self.email,
+          username: self.username,
+          role: self.role,
+          password: self.password,
         }).then(function (response) {
           self.$session.start();
-          self.session.set('auth', true);
+          self.$session.set('auth', true);
           self.$session.set('user', response.data.user);
-          // localStorage.setItem('auth', true);
-          // localStorage.setItem('user', response.data.user);
-          // self.$store.commit('login', response.data.user);
-          self.$router.push('/');
+          self.$bus.$emit('login', 'User logged');
+          self.$router.push({ name: 'Home' });
         }).catch(function (error) {
-          if(error.response.data.errors.email != null) {
-            self.error = error.response.data.errors.email[0]
-          }
-          else if(error.response.data.errors.username != null) {
-            self.error = error.response.data.errors.username[0]
-          }
-          else if(error.response.data.errors.role != null) {
-            self.error = error.response.data.errors.role[0]
-          }
-          else if(error.response.data.errors.password != null) {
-            self.error = error.response.data.errors.password[0]
-          }
-          else if(error.response.data.errors.other) {
-            self.error = error.response.data.errors.other
+          if(error.response && error.response.data && error.response.data.errors) {
+            if(error.response.data.errors.email != null) {
+              self.error = error.response.data.errors.email[0]
+            }
+            else if(error.response.data.errors.username != null) {
+              self.error = error.response.data.errors.username[0]
+            }
+            else if(error.response.data.errors.role != null) {
+              self.error = error.response.data.errors.role[0]
+            }
+            else if(error.response.data.errors.password != null) {
+              self.error = error.response.data.errors.password[0]
+            }
+            else if(error.response.data.errors.other) {
+              self.error = error.response.data.errors.other
+            }
           }
         });
       }
@@ -88,6 +88,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-</style>

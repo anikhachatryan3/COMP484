@@ -2,7 +2,7 @@
   <div>
     <h1 class="mt-3" v-if="user">Hello, {{user.username}}!</h1>
     <div v-for="post in posts" :key="post.id">
-      <div>{{error}}</div>
+      <div class="mt-3">{{error}}</div>
       <h4>{{post.title}}</h4>
       <div><p>{{post.body}}</p></div>
       <div>{{post.user.username}}</div>
