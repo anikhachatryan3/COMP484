@@ -7,19 +7,19 @@
       <div><p>{{post.body}}</p></div>
       <div>{{post.user.username}}</div>
       <div>{{dateTime(post.created_at)}}</div>
-      <div v-if="post.user.id == user.id || user.role.name == 'admin'"><button @click="deletePost(post)" type="button" class="btn btn-danger mt-2">Delete Post</button></div>
+      <div v-if="user && (post.user.id == user.id || user.role.name == 'admin')"><button @click="deletePost(post)" type="button" class="btn btn-danger mt-2">Delete Post</button></div>
       <div class="mt-3">
         <h3>Comment(s):</h3>
         <div v-for="comment in post.comments" :key="comment.id">
           <div>{{comment.body}}</div>
           <div>{{comment.user.username}}</div>
           <div>{{dateTime(comment.created_at)}}</div>
-          <div v-if="comment.user.id == user.id || user.role.name == 'admin'"><button @click="deleteComment(comment, post)" type="button" class="btn btn-danger mt-2">Delete Comment</button></div>
+          <div v-if="user && (comment.user.id == user.id || user.role.name == 'admin')"><button @click="deleteComment(comment, post)" type="button" class="btn btn-danger mt-2">Delete Comment</button></div>
           <br>
         </div>
         <br>
       </div>
-      <div>
+      <div v-if="user">
         <form>
           <div>
             <div>Create a Comment:</div>
