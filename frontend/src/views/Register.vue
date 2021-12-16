@@ -20,7 +20,7 @@
       <div class="mt-2">
         <button @click="register()" type="button">Register</button>
       </div>
-      <div>
+      <div class="text-danger mt-2">
         {{ error }}
       </div>
       <br>
