@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="mt-3">Hello, {{user.username}}!</h1>
+    <h1 class="mt-3" v-if="user">Hello, {{user.username}}!</h1>
     <div v-for="post in posts" :key="post.id">
       <div>{{error}}</div>
       <h4>{{post.title}}</h4>
