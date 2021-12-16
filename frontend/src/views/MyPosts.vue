@@ -33,7 +33,7 @@
           <div>{{comment.body}}</div>
           <div>{{comment.user.username}}</div>
           <div>{{dateTime(comment.created_at)}}</div>
-          <div><button @click="deleteComment(comment, post)" type="button" class="btn btn-danger mt-2">Delete Comment</button></div>
+          <div v-if="comment.user.id == user.id || user.role.name == 'admin'"><button @click="deleteComment(comment, post)" type="button" class="btn btn-danger mt-2">Delete Comment</button></div>
           <br>
         </div>
       </div>
@@ -75,8 +75,8 @@ export default {
   },
   created() {
     let self = this;
-    // axios.get('http://localhost:8000/api/' + self.$session.user.id + '/posts')
-    axios.get('http://localhost:8000/api/' + self.$session.get('user').id + '/posts')
+    // axios.get('https://comp-484.herokuapp.com/api/' + self.$session.user.id + '/posts')
+    axios.get('https://comp-484.herokuapp.com/api/' + self.$session.get('user').id + '/posts')
     .then(function (response) {
         self.posts = response.data.posts;
         // console.log(self.posts)
@@ -85,14 +85,19 @@ export default {
     });
     this.user_id = self.$session.get('user').id
   },
+  computed: {
+    user() {
+      return this.$session.get('user');
+    }
+  },
   methods: {
     dateTime(value) {
       return moment(String(value)).format('MM/DD/YYYY hh:mm a');
     },
     deletePost(post) {
       let self = this;
-      // axios.delete('http://localhost:8000/api/' + self.$session.user.id + '/posts/' + post.id)
-      axios.delete('http://localhost:8000/api/' + this.$session.get('user').id + '/posts/' + post.id)
+      // axios.delete('https://comp-484.herokuapp.com/api/' + self.$session.user.id + '/posts/' + post.id)
+      axios.delete('https://comp-484.herokuapp.com/api/' + this.$session.get('user').id + '/posts/' + post.id)
       .then(function () {
         for (let i = 0; i < self.posts.length; i++) {
           if (self.posts[i].id === post.id) {
@@ -107,7 +112,7 @@ export default {
     },
     deleteComment(comment, post) {
       // console.log('deleting comment');
-      axios.delete('http://localhost:8000/api/' + this.$session.get('user').id + '/comments/' + comment.id)
+      axios.delete('https://comp-484.herokuapp.com/api/' + this.$session.get('user').id + '/comments/' + comment.id)
       .then(function () {
         for(let i = 0; i < post.comments.length; i++) {
           if(post.comments[i].id === comment.id) {
@@ -122,7 +127,7 @@ export default {
     },
     createPost() {
       let self = this;
-      axios.post('http://localhost:8000/api/create-post', {
+      axios.post('https://comp-484.herokuapp.com/api/create-post', {
         title: this.title,
         body: this.body,
         user_id: self.$session.get('user').id,
@@ -137,7 +142,7 @@ export default {
     },
     createComment(post) {
       let self = this;
-      axios.post('http://localhost:8000/api/create-comment', {
+      axios.post('https://comp-484.herokuapp.com/api/create-comment', {
         body: this.comment.body,
         post_id: post.id,
         user_id: self.$session.get('user').id,

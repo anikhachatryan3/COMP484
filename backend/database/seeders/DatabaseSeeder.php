@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -27,11 +28,17 @@ class DatabaseSeeder extends Seeder
 
         // users
         $adminUser = User::factory()->create([
-            'role_id' => Role::where('name', 'admin')->firstOrFail()->id,
+            'username' => 'admin',
+            'email' => 'admin@gmail.com',
+            'password' => Hash::make('password'),
+            'role_id' => $adminRole->id,
         ]);
 
         $standardUser = User::factory()->create([
-            'role_id' => Role::where('name', 'standard')->firstOrFail()->id,
+            'username' => 'user1',
+            'email' => 'user1@gmail.com',
+            'password' => Hash::make('password'),
+            'role_id' => $standardRole->id,
         ]);
 
         // posts

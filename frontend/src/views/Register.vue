@@ -53,7 +53,7 @@ export default {
       }
       else {
         let self = this;
-        axios.post('http://localhost:8000/api/register2', {
+        axios.post('https://comp-484.herokuapp.com/api/register2', {
           email: this.email,
           username: this.username,
           role: this.role,

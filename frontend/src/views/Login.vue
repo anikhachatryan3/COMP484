@@ -38,7 +38,7 @@ export default {
   methods: {
     login() {
         let self = this;
-        axios.post('http://localhost:8000/api/login2', {
+        axios.post('https://comp-484.herokuapp.com/api/login2', {
             email: this.email,
             password: this.password,
         }).then(function (response) {
